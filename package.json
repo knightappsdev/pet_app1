@@ -7,6 +7,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "seed:demo": "node scripts/seed-demo-data.js",
+    "setup": "node scripts/quick-start.js",
+    "install:all": "npm install && cd pwa && npm install && cd ../admin && npm install",
+    "clean": "rm -rf node_modules package-lock.json pwa/node_modules pwa/package-lock.json admin/node_modules admin/package-lock.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["pet-care", "api", "mobile-app", "uk", "pets", "health", "services"],
