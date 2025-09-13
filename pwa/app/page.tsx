@@ -120,9 +120,14 @@ const upcomingReminders = [
 export default function HomePage() {
   const { user, isAuthenticated, isLoading } = useAuth()
   const [isOnline, setIsOnline] = useState(true)
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // Initialize client-side state to avoid hydration mismatch
+    setMounted(true)
+    setCurrentTime(new Date())
+    
     // Update time every minute
     const timer = setInterval(() => {
       setCurrentTime(new Date())
@@ -143,6 +148,7 @@ export default function HomePage() {
   }, [])
 
   const greeting = () => {
+    if (!mounted || !currentTime) return 'Welcome'
     const hour = currentTime.getHours()
     if (hour < 12) return 'Good morning'
     if (hour < 17) return 'Good afternoon'
@@ -174,13 +180,17 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-gray-900">
                 {greeting()}{isAuthenticated && user ? `, ${user.firstName}` : ''}! 👋
               </h1>
-              <p className="text-gray-600 text-sm">
-                {currentTime.toLocaleDateString('en-GB', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
+              <p className="text-gray-600 text-sm" suppressHydrationWarning={true}>
+                {mounted && currentTime ? (
+                  currentTime.toLocaleDateString('en-GB', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })
+                ) : (
+                  'Loading date...'
+                )}
               </p>
             </div>
             <div className="flex items-center space-x-3">

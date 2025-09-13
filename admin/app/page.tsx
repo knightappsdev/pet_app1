@@ -115,9 +115,13 @@ const recentActivity = [
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    setCurrentTime(new Date())
+    
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 60000)
@@ -205,13 +209,17 @@ export default function AdminDashboard() {
               </button>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-sm text-gray-500">
-                  {currentTime.toLocaleDateString('en-GB', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                <p className="text-sm text-gray-500" suppressHydrationWarning={true}>
+                  {mounted && currentTime ? (
+                    currentTime.toLocaleDateString('en-GB', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })
+                  ) : (
+                    'Loading...'
+                  )}
                 </p>
               </div>
             </div>
