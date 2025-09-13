@@ -1404,11 +1404,19 @@ export const authApi = {
     })
   },
 
-  // Reset password
+  // Reset password request
   resetPassword: async (email: string): Promise<ApiResponse> => {
-    return apiRequest('/api/auth/reset-password', {
+    return apiRequest('/api/auth/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ email }),
+    })
+  },
+
+  // Confirm reset password with token
+  confirmResetPassword: async (token: string, password: string): Promise<ApiResponse> => {
+    return apiRequest(`/api/auth/reset-password/${token}`, {
+      method: 'PUT',
+      body: JSON.stringify({ password }),
     })
   },
 

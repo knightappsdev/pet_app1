@@ -322,7 +322,7 @@ router.post('/forgot-password', [
     await user.save({ validateBeforeSave: false });
 
     // Create reset url
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`;
+    const resetUrl = `${req.protocol}://${req.get('host')}/auth/reset-password/${resetToken}`;
 
     // In a real application, you would send an email here
     // For demo purposes, we'll return the reset token
