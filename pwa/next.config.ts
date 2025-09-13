@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
   
+  // Fix workspace root warning
+  outputFileTracingRoot: process.cwd(),
+  
   // Optimize images
   images: {
     domains: [
@@ -41,25 +44,28 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_APP_DESCRIPTION: 'Comprehensive pet care platform for UK pet owners',
   },
 
-  // Webpack optimization
+  // Webpack optimization (only when not using Turbopack)
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Optimize bundles
-    config.optimization.splitChunks = {
-      chunks: 'all',
-      cacheGroups: {
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
+    // Only apply webpack optimizations in production or when not using Turbopack
+    if (!dev || process.env.TURBOPACK !== '1') {
+      // Optimize bundles
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: -10,
+            chunks: 'all',
+          },
         },
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          priority: -10,
-          chunks: 'all',
-        },
-      },
-    };
+      };
+    }
 
     return config;
   },
